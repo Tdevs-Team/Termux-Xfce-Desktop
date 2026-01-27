@@ -20,9 +20,6 @@ A **one-command installer** to run a full **XFCE desktop environment** on Androi
 ---
 
 ## 📸 Screenshots
-
-> (Replace these with real screenshots after upload)
-
 ![Desktop](assets/desktop.png)
 ![Terminal](assets/terminal.png)
 ![Browser](assets/browser.png)
