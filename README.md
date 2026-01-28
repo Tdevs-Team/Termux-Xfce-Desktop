@@ -38,8 +38,6 @@ A **one-command installer** to run a full **XFCE desktop environment** on Androi
 ## 🛠 Installation
 
 ```bash
-pkg install git
-git clone https://github.com/Tdevs-Team/Termux-Xfce-Desktop.git
-cd Termux-Xfce-Desktop
+curl -O https://raw.githubusercontent.com/Tdevs-Team/Termux-Xfce-Desktop/main/install-tx11-desktop.sh
 chmod +x install-tx11-desktop.sh
 ./install-tx11-desktop.sh
