@@ -27,7 +27,7 @@ echo -e "${BLUE}Dev : @TechTern${RESET}\n"
 ################ MENU ################
 echo -e "${CYAN}1) Install Desktop"
 echo -e "2) Uninstall Everything${RESET}"
-read -r -p "> " ACTION
+read -r -p "> " ACTION </dev/tty
 
 ################ UNINSTALL ################
 if [ "$ACTION" = "2" ]; then
@@ -37,7 +37,6 @@ if [ "$ACTION" = "2" ]; then
 
   rm -rf ~/.config/tx11 ~/.config/code-server ~/.config/pulse
   rm -f $PREFIX/bin/tx11-desktop
-  sed -i '/TX11 PROMPT START/,/TX11 PROMPT END/d' ~/.bashrc 2>/dev/null || true
 
   pkill -f termux-x11 2>/dev/null || true
   pkill xfce4-session 2>/dev/null || true
@@ -73,7 +72,7 @@ echo -e "${CYAN}Browser:${RESET}"
 echo -e "${BLUE}1) Firefox"
 echo -e "2) Chromium"
 echo -e "3) Both${RESET}"
-read -r -p "> " BROWSER
+read -r -p "> " BROWSER </dev/tty
 
 case "$BROWSER" in
   1) pkg install $APT_OPTS firefox ;;
@@ -84,21 +83,21 @@ clear
 
 ################ PYTHON ################
 echo -e "${CYAN}Install Python? (y/n)${RESET}"
-read -r -p "> " PYTHON
+read -r -p "> " PYTHON </dev/tty
 [[ "$PYTHON" =~ ^[Yy]$ ]] && pkg install $APT_OPTS python
 clear
 
 ################ CODE SERVER ################
 echo -e "${CYAN}Install VS Code (code-server)? (y/n)${RESET}"
-read -r -p "> " VSCODE
+read -r -p "> " VSCODE </dev/tty
 
 if [[ "$VSCODE" =~ ^[Yy]$ ]]; then
   pkg install $APT_OPTS code-server
 
   echo -e "${CYAN}Set code-server password:${RESET}"
-  read -s -p "Password: " CS_PASS
+  read -s -p "Password: " CS_PASS </dev/tty
   echo
-  read -s -p "Confirm: " CS_CONFIRM
+  read -s -p "Confirm: " CS_CONFIRM </dev/tty
   echo
 
   if [ "$CS_PASS" = "$CS_CONFIRM" ] && [ -n "$CS_PASS" ]; then
@@ -115,12 +114,11 @@ clear
 
 ################ AUDIO FIX ################
 mkdir -p ~/.config/pulse
-
 cat > ~/.config/pulse/default.pa << 'EOF'
 load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1
 EOF
 
-################ XFCE CONFIG ################
+################ XFCE ################
 mkdir -p ~/.config/tx11
 
 cat > ~/.config/tx11/startxfce.sh << 'EOF'
@@ -147,7 +145,7 @@ EOF
 
 chmod +x ~/.config/tx11/startxfce.sh
 
-################ TERMUX X11 START ################
+################ X11 START ################
 cat > $PREFIX/bin/tx11-desktop << 'EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
@@ -169,7 +167,7 @@ chmod +x $PREFIX/bin/tx11-desktop
 ################ DONE ################
 clear
 echo -e "${BLUE}✔ Installation complete${RESET}"
-echo -e "${CYAN}Start desktop anytime using:${RESET}"
+echo -e "${CYAN}Start desktop using:${RESET}"
 echo -e "${BLUE}tx11-desktop${RESET}"
 
 tx11-desktop
