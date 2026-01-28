@@ -1,6 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/bash
-set -e
 
+# ---- FORCE INTERACTIVE MODE (CRITICAL FIX) ----
+if [ ! -t 0 ]; then
+  exec bash "$0" </dev/tty
+fi
+
+set -e
 export DEBIAN_FRONTEND=noninteractive
 APT_OPTS="-y -o Dpkg::Options::=--force-confnew"
 
@@ -25,9 +30,10 @@ EOF
 echo -e "${BLUE}Dev : @TechTern${RESET}\n"
 
 ################ MENU ################
-echo -e "${CYAN}1) Install Desktop"
+echo -e "${CYAN}Select an option:${RESET}"
+echo -e "${BLUE}1) Install Desktop"
 echo -e "2) Uninstall Everything${RESET}"
-read -r -p "> " ACTION </dev/tty
+read -rp "> " ACTION
 
 ################ UNINSTALL ################
 if [ "$ACTION" = "2" ]; then
@@ -68,11 +74,11 @@ pkg install $APT_OPTS \
 clear
 
 ################ BROWSER ################
-echo -e "${CYAN}Browser:${RESET}"
+echo -e "${CYAN}Choose browser:${RESET}"
 echo -e "${BLUE}1) Firefox"
 echo -e "2) Chromium"
 echo -e "3) Both${RESET}"
-read -r -p "> " BROWSER </dev/tty
+read -rp "> " BROWSER
 
 case "$BROWSER" in
   1) pkg install $APT_OPTS firefox ;;
@@ -83,21 +89,21 @@ clear
 
 ################ PYTHON ################
 echo -e "${CYAN}Install Python? (y/n)${RESET}"
-read -r -p "> " PYTHON </dev/tty
+read -rp "> " PYTHON
 [[ "$PYTHON" =~ ^[Yy]$ ]] && pkg install $APT_OPTS python
 clear
 
 ################ CODE SERVER ################
 echo -e "${CYAN}Install VS Code (code-server)? (y/n)${RESET}"
-read -r -p "> " VSCODE </dev/tty
+read -rp "> " VSCODE
 
 if [[ "$VSCODE" =~ ^[Yy]$ ]]; then
   pkg install $APT_OPTS code-server
 
   echo -e "${CYAN}Set code-server password:${RESET}"
-  read -s -p "Password: " CS_PASS </dev/tty
+  read -rsp "Password: " CS_PASS
   echo
-  read -s -p "Confirm: " CS_CONFIRM </dev/tty
+  read -rsp "Confirm: " CS_CONFIRM
   echo
 
   if [ "$CS_PASS" = "$CS_CONFIRM" ] && [ -n "$CS_PASS" ]; then
@@ -123,11 +129,9 @@ mkdir -p ~/.config/tx11
 
 cat > ~/.config/tx11/startxfce.sh << 'EOF'
 #!/data/data/com.termux/files/usr/bin/bash
-
 export DISPLAY=:0
 export XDG_RUNTIME_DIR=$TMPDIR
 export PULSE_SERVER=127.0.0.1
-
 unset SESSION_MANAGER
 unset DBUS_SESSION_BUS_ADDRESS
 
@@ -148,7 +152,6 @@ chmod +x ~/.config/tx11/startxfce.sh
 ################ X11 START ################
 cat > $PREFIX/bin/tx11-desktop << 'EOF'
 #!/data/data/com.termux/files/usr/bin/bash
-
 pkill -f termux-x11 2>/dev/null || true
 pkill xfce4-session 2>/dev/null || true
 
@@ -167,7 +170,7 @@ chmod +x $PREFIX/bin/tx11-desktop
 ################ DONE ################
 clear
 echo -e "${BLUE}✔ Installation complete${RESET}"
-echo -e "${CYAN}Start desktop using:${RESET}"
+echo -e "${CYAN}Run desktop with:${RESET}"
 echo -e "${BLUE}tx11-desktop${RESET}"
 
 tx11-desktop
